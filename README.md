@@ -37,6 +37,8 @@ GitHub Pages는 정적 파일만 배포하므로 이 앱의 `/api/translation-se
 4. 빌드 명령은 비워두거나 기본값을 사용해도 됩니다. 이 프로젝트는 별도 빌드가 없습니다.
 5. 배포 후 `/api/health`에서 `server: "vercel-node-function"`과 `hasApiKey: true`가 보이면 API 함수가 정상입니다.
 
+현재 프로젝트에는 `vercel.json`이 포함되어 있어 Vercel이 정적 화면을 `public/`에서 찾도록 고정해두었습니다.
+
 ## 기능
 
 - 대상 언어 선택
@@ -52,6 +54,7 @@ GitHub Pages는 정적 파일만 배포하므로 이 앱의 `/api/translation-se
 - `api/translation-session.js`: Vercel 배포용 client secret 발급 서버리스 함수
 - `api/health.js`: Vercel 배포용 상태 확인 함수
 - `lib/realtime-session.mjs`: 로컬 서버와 Vercel 함수가 공유하는 OpenAI 세션 생성 로직
+- `vercel.json`: Vercel 정적 출력 폴더 설정
 - `public/index.html`: 앱 화면
 - `public/styles.css`: 반응형 UI 스타일
 - `public/app.js`: WebRTC 연결과 실시간 이벤트 처리
