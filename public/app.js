@@ -92,10 +92,10 @@ async function checkServerHealth() {
   try {
     const health = await fetch("/api/health").then((response) => response.json());
     if (!health.hasApiKey) {
-      logEvent("OPENAI_API_KEY가 아직 설정되지 않았습니다.");
+      logEvent("OPENAI_API_KEY가 아직 설정되지 않았습니다. 배포 환경 변수 또는 로컬 .env를 확인하세요.");
     }
   } catch {
-    logEvent("로컬 서버 상태를 확인하지 못했습니다.");
+    logEvent("서버 상태를 확인하지 못했습니다.");
   }
 }
 
@@ -473,7 +473,7 @@ function readableError(error) {
   const rawMessage = error instanceof Error ? error.message : String(error);
   const message = parseOpenAIErrorText(rawMessage) || rawMessage;
   if (message.includes("OPENAI_API_KEY")) {
-    return "OPENAI_API_KEY를 .env에 설정한 뒤 서버를 다시 시작하세요.";
+    return "OPENAI_API_KEY가 서버에 설정되지 않았습니다. 로컬은 .env, Vercel/Netlify는 사이트 Environment variables에 추가한 뒤 재배포하세요.";
   }
   if (message.includes("insufficient_quota") || message.includes("exceeded your current quota")) {
     return "OpenAI API 사용 한도 또는 결제 크레딧이 부족합니다. OpenAI Platform의 Billing/Usage에서 결제 수단, 크레딧, 프로젝트 한도를 확인해 주세요.";
