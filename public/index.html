@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GPT Realtime 동시통역</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <h1>GPT Realtime 동시통역</h1>
+            <p>마이크 입력을 실시간 번역 음성과 자막으로 받습니다.</p>
+          </div>
+        </div>
+        <div class="session-state" id="sessionState" data-state="idle">
+          <span class="state-dot" aria-hidden="true"></span>
+          <span id="stateText">대기 중</span>
+        </div>
+      </header>
+
+      <section class="control-strip" aria-label="통역 설정">
+        <label class="field">
+          <span>번역 언어</span>
+          <select id="targetLanguage"></select>
+        </label>
+        <label class="field">
+          <span>마이크 환경</span>
+          <select id="noiseReduction">
+            <option value="near_field">이어셋 / 가까운 마이크</option>
+            <option value="far_field">노트북 / 회의실 마이크</option>
+            <option value="off">입력 노이즈 보정 끄기</option>
+          </select>
+        </label>
+        <label class="toggle">
+          <input id="sourceTranscript" type="checkbox" checked>
+          <span>원문 자막</span>
+        </label>
+        <label class="toggle">
+          <input id="muteOutput" type="checkbox">
+          <span>번역 음성 음소거</span>
+        </label>
+        <div class="actions">
+          <button class="primary" id="startButton" type="button">
+            <span class="button-icon" aria-hidden="true">▶</span>
+            시작
+          </button>
+          <button id="stopButton" type="button" disabled>
+            <span class="button-icon" aria-hidden="true">■</span>
+            종료
+          </button>
+          <button id="clearButton" type="button">
+            <span class="button-icon" aria-hidden="true">↺</span>
+            지우기
+          </button>
+        </div>
+      </section>
+
+      <section class="meter-row" aria-label="세션 상태">
+        <div class="meter-block">
+          <span>마이크</span>
+          <div class="meter" aria-hidden="true">
+            <i id="micMeter"></i>
+          </div>
+        </div>
+        <div class="metric">
+          <span>모델</span>
+          <strong>gpt-realtime-translate</strong>
+        </div>
+        <div class="metric">
+          <span>시간</span>
+          <strong id="elapsedTime">00:00</strong>
+        </div>
+        <div class="metric">
+          <span>오디오 프레임</span>
+          <strong id="audioFrames">0</strong>
+        </div>
+      </section>
+
+      <section class="permission-help" id="permissionHelp" hidden>
+        <div>
+          <h2>마이크 권한을 확인해 주세요</h2>
+          <p id="permissionHelpText">
+            주소창 왼쪽의 사이트 정보에서 마이크를 허용한 뒤 새로고침하고 다시 시작하세요.
+          </p>
+        </div>
+        <div class="permission-actions">
+          <button id="retryMicButton" type="button">다시 시도</button>
+          <a href="http://localhost:3000/" target="_blank" rel="noreferrer">외부 브라우저로 열기</a>
+        </div>
+      </section>
+
+      <section class="transcript-grid" aria-label="통역 자막">
+        <article class="transcript-panel">
+          <div class="panel-header">
+            <h2>원문</h2>
+            <span id="sourceLabel">자동 감지</span>
+          </div>
+          <div class="transcript-body" id="sourceTranscriptText" aria-live="polite">
+            <span class="empty">통역을 시작하면 원문 자막이 여기에 표시됩니다.</span>
+          </div>
+        </article>
+        <article class="transcript-panel emphasis">
+          <div class="panel-header">
+            <h2>번역</h2>
+            <span id="targetLabel">한국어</span>
+          </div>
+          <div class="transcript-body output" id="targetTranscriptText" aria-live="polite">
+            <span class="empty">번역 자막이 여기에 누적됩니다.</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="event-panel" aria-label="이벤트 로그">
+        <div class="panel-header compact">
+          <h2>이벤트</h2>
+          <span id="connectionState">연결 전</span>
+        </div>
+        <ol id="eventLog"></ol>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
